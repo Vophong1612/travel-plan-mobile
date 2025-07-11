@@ -1,3 +1,3 @@
 # votee-enrichment
 
-init
+init 2
