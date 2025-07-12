@@ -1,6 +1,6 @@
 class AppConfig {
   // API Configuration
-  static const bool useMockApi = true; // Set to false when real API is ready
+  static const bool useMockApi = false; // Set to false when real API is ready
   static const bool enableApiLogging = true;
   
   // Mock API Configuration

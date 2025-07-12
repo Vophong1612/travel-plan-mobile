@@ -1,13 +1,19 @@
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:logger/logger.dart';
 import '../../common/exceptions.dart';
+import '../../common/trip_detail_storage.dart';
 import '../datasource/api_client.dart';
 import '../model/send_message_request.dart';
+import '../model/send_message_response.dart';
+import '../repository/mappers/send_message_to_trip_detail_mapper.dart';
+import '../repository/mappers/trip_detail_mapper.dart';
 import '../../domain/repository/chat_repository.dart';
 
 class ChatRepositoryImpl implements ChatRepository {
   final ApiClient _apiClient;
   final List<types.Message> _chatHistory = [];
+  final TripDetailStorage _tripDetailStorage = TripDetailStorage();
+  final TripDetailMapper _tripDetailMapper = TripDetailMapper();
 
   ChatRepositoryImpl(this._apiClient);
 
@@ -49,9 +55,12 @@ class ChatRepositoryImpl implements ChatRepository {
       _chatHistory.add(userMessage);
       
       final request = SendMessageRequest(message: message);
-      Logger().d('Request: $request');
+      Logger().d('Request: ${request.toJson()}');
       final response = await _apiClient.sendMessage(request);
-      Logger().d('Response: $response');
+      Logger().d('Response: ${response.toJson()}');
+      
+      // Try to parse and store trip detail if the response contains trip data
+      _tryParseAndStoreTripDetail(response);
       
       // Add bot response to local history
       final botMessage = types.TextMessage(
@@ -69,20 +78,46 @@ class ChatRepositoryImpl implements ChatRepository {
     }
   }
 
-  types.Message _chatMessageToMessage(dynamic chatMessage) {
-    final role = chatMessage.role;
-    final authorId = role == 'user' ? 'user' : 'bot';
-    final author = types.User(id: authorId);
-    final id = DateTime.parse(chatMessage.timestamp).millisecondsSinceEpoch.toString();
-    final text = chatMessage.message;
-    
-    return types.TextMessage(
-      author: author,
-      id: id,
-      text: text,
-      createdAt: DateTime.parse(chatMessage.timestamp).millisecondsSinceEpoch,
-    );
+  /// Try to parse the bot response as a SendMessageResponse and store trip detail
+  void _tryParseAndStoreTripDetail(SendMessageResponse sendMessageResponse) {
+    try {
+      // Check if it's a successful response with trip details
+      if (sendMessageResponse.success == true && sendMessageResponse.tripDetails != null) {
+        Logger().d('Trip detail detected in response, storing...');
+
+        // Map to TripDetailResponse
+        final tripDetailResponse = SendMessageToTripDetailMapper.map(sendMessageResponse);
+
+        // Map to domain entity
+        if (tripDetailResponse.data != null) {
+          final tripDetailData = _tripDetailMapper.map(tripDetailResponse.data!);
+
+          // Store in the storage
+          _tripDetailStorage.setTripDetail(tripDetailData);
+          Logger().d('Trip detail stored successfully');
+        }
+      }
+    } catch (e) {
+      // If parsing fails, it's not a trip detail response, so we ignore it
+      // This is expected for regular chat messages
+      Logger().d('Response is not a trip detail response: $e');
+    }
   }
+
+  // types.Message _chatMessageToMessage(dynamic chatMessage) {
+  //   final role = chatMessage.role;
+  //   final authorId = role == 'user' ? 'user' : 'bot';
+  //   final author = types.User(id: authorId);
+  //   final id = DateTime.parse(chatMessage.timestamp).millisecondsSinceEpoch.toString();
+  //   final text = chatMessage.message;
+    
+  //   return types.TextMessage(
+  //     author: author,
+  //     id: id,
+  //     text: text,
+  //     createdAt: DateTime.parse(chatMessage.timestamp).millisecondsSinceEpoch,
+  //   );
+  // }
   
   /// Clear the in-memory chat history
   void clearChatHistory() {

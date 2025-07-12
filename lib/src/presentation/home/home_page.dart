@@ -9,11 +9,6 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Travel Plan'),
-        backgroundColor: AppColors.primary,
-        foregroundColor: AppColors.secondary,
-      ),
       body: SafeArea(
         child: Container(
           width: double.infinity,
@@ -69,10 +64,6 @@ class HomePage extends StatelessWidget {
                         context, 'trip_demo_user_1703123456789'),
                     icon: const Icon(Icons.card_travel),
                     label: const Text('Trip Detail'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue,
-                      foregroundColor: Colors.white,
-                    ),
                   ),
                 ],
               ),

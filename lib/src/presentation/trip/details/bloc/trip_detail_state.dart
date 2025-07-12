@@ -29,3 +29,5 @@ class TripDetailLoadFailure extends TripDetailState {
   @override
   List<Object?> get props => [error];
 }
+
+class TripDetailNotAvailable extends TripDetailState {}

@@ -15,3 +15,5 @@ class FetchTripDetail extends TripDetailEvent {
   @override
   List<Object?> get props => [tripId];
 }
+
+class CheckTripDetailAvailability extends TripDetailEvent {}

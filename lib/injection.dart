@@ -60,5 +60,5 @@ void configureDependencies() {
   di.registerFactory<ChatBloc>(() => ChatBloc(di<ChatRepository>()));
 
   // Register TripDetailBloc (same for both real and mock)
-  di.registerFactory<TripDetailBloc>(() => TripDetailBloc(di<TripRepository>()));
+  di.registerFactory<TripDetailBloc>(() => TripDetailBloc());
 } 

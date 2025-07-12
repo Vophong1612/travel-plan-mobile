@@ -75,7 +75,14 @@ class MockApiClient {
     );
     _mockChatHistory.add(botMessage);
     
-    return SendMessageResponse(message: botResponse);
+    return SendMessageResponse(
+      success: true,
+      message: botResponse,
+      tripId: 'trip_1_1752324532',
+      extractedInfo: ExtractedInfo(destination: 'Paris', startDate: '2023-11-26', endDate: '2023-11-29', durationDays: 3, foodPreferences: [], activities: [], travelers: 1, budgetLevel: null),
+      tripDetails: TripDetails(userId: '1', destination: 'Paris', startDate: '2023-11-26', endDate: '2023-11-29', durationDays: 3, userProfile: UserProfile(userId: '1', preferences: Preferences(travelStyle: ['cultural'], pace: 'moderate', interests: [], dietaryRestrictions: null, accommodationPreferences: null, transportPreferences: null, activityPreferences: null), travelerInfo: TravelerInfo(groupSize: 1, travelsWith: [], ages: [], accessibilityNeeds: null), budget: Budget(level: 'mid-range', currency: 'USD', dailyMax: 100.0, totalMax: 1000.0)), itinerary: [], extractedPreferences: ExtractedPreferences(destination: 'Paris', startDate: '2023-11-26', endDate: '2023-11-29', durationDays: 3, foodPreferences: [], activities: [], travelers: 1, budgetLevel: null), status: 'planning_in_progress', createdAt: '2025-07-12T12:48:52.069446', tripId: 'trip_1_1752324532'),
+      timestamp: DateTime.now().toIso8601String(),
+    );
   }
 
   Future<TripDetailResponse> getTripDetails(String tripId) async {

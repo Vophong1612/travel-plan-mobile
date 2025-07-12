@@ -57,42 +57,47 @@ class ChatView extends StatelessWidget {
                   final colorScheme = Theme.of(context).colorScheme;
                   final textTheme = Theme.of(context).textTheme;
                   if (isSentByMe) {
-                    return ConstrainedBox(
-                      constraints: BoxConstraints(
-                        maxWidth: MediaQuery.of(context).size.width * 0.8,
-                      ),
-                      child: Container(
-                        padding: const EdgeInsets.all(12),
-                        margin: const EdgeInsets.only(bottom: 16),
-                        decoration: BoxDecoration(
-                          color: colorScheme.primary,
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(16),
-                            topRight: Radius.circular(16),
-                            bottomLeft: Radius.circular(16),
-                            bottomRight: Radius.circular(0),
-                          ),
+                    return Container(
+                       constraints: BoxConstraints(
+                      maxWidth: MediaQuery.of(context).size.width * 0.8,
+                    ),
+                      padding: const EdgeInsets.all(12),
+                      margin: const EdgeInsets.only(bottom: 16),
+                      decoration: BoxDecoration(
+                        color: colorScheme.primary,
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(16),
+                          topRight: Radius.circular(16),
+                          bottomLeft: Radius.circular(16),
+                          bottomRight: Radius.circular(0),
                         ),
-                        child: Text(message.text, style: textTheme.bodyMedium?.copyWith(color: colorScheme.onPrimary, fontSize: 16)),
                       ),
+                      child: Text(message.text, style: textTheme.bodyMedium?.copyWith(color: colorScheme.onPrimary, fontSize: 16)),
                     );
                   } else {
-                    return ConstrainedBox(
+                    return Container(
                       constraints: BoxConstraints(
                         maxWidth: MediaQuery.of(context).size.width * 0.8,
                       ),
-                      child: Container(
-                        padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          color: colorScheme.primaryFixed,
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(0),
-                            topRight: Radius.circular(16),
-                            bottomLeft: Radius.circular(16),
-                            bottomRight: Radius.circular(16),
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: colorScheme.primaryFixed,
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(0),
+                          topRight: Radius.circular(16),
+                          bottomLeft: Radius.circular(16),
+                          bottomRight: Radius.circular(16),
+                        ),
+                      ),
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: IntrinsicWidth(
+                          child: MarkdownBody(
+                            data: message.text,
+                            shrinkWrap: true,
+                            fitContent: true,
                           ),
                         ),
-                        child: MarkdownBody(data: message.text),
                       ),
                     );
                   }

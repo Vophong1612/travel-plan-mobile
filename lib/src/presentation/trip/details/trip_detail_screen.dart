@@ -18,7 +18,7 @@ class TripDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => di<TripDetailBloc>()..add(FetchTripDetail(tripId)),
+      create: (context) => di<TripDetailBloc>()..add(CheckTripDetailAvailability()),
       child: const TripDetailView(),
     );
   }
@@ -72,6 +72,8 @@ class TripDetailView extends StatelessWidget {
                   ],
                 ),
               );
+            } else if (state is TripDetailNotAvailable) {
+              return _buildNoTripDetailMessage(context);
             } else if (state is TripDetailLoadFailure) {
               return Center(child: Text(state.error));
             }
@@ -84,6 +86,72 @@ class TripDetailView extends StatelessWidget {
           context.push('/chat');
         },
         child: const Icon(Icons.chat_bubble_outline),
+      ),
+    );
+  }
+
+  Widget _buildNoTripDetailMessage(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+    
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(32.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.travel_explore,
+              size: 80,
+              color: colorScheme.primary.withValues(alpha: 0.6),
+            ),
+            const SizedBox(height: 24),
+            Text(
+              'No Trip Plan Available',
+              style: textTheme.headlineSmall?.copyWith(
+                color: colorScheme.onSurface,
+                fontWeight: FontWeight.bold,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'You don\'t have any trip plans yet. Start planning your next adventure by chatting with our AI travel assistant!',
+              style: textTheme.bodyLarge?.copyWith(
+                color: colorScheme.onSurface.withValues(alpha: 0.7),
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 32),
+            ElevatedButton.icon(
+              onPressed: () {
+                context.push('/chat');
+              },
+              icon: const Icon(Icons.chat_bubble_outline),
+              label: const Text('Start Planning'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: colorScheme.primary,
+                foregroundColor: colorScheme.onPrimary,
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+            TextButton.icon(
+              onPressed: () {
+                // Refresh or retry logic
+                context.read<TripDetailBloc>().add(CheckTripDetailAvailability());
+              },
+              icon: const Icon(Icons.refresh),
+              label: const Text('Refresh'),
+              style: TextButton.styleFrom(
+                foregroundColor: colorScheme.primary,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
