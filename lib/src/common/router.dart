@@ -3,12 +3,14 @@ import 'package:go_router/go_router.dart';
 import 'package:travel_plan_mobile/src/presentation/chat/chat_screen.dart';
 import 'package:travel_plan_mobile/src/presentation/home/home_page.dart';
 import 'package:travel_plan_mobile/src/presentation/debug/debug_screen.dart';
+import 'package:travel_plan_mobile/src/presentation/trip/details/trip_detail_screen.dart';
 
 // Route constants
 class AppRoutes {
   static const String home = '/';
   static const String chat = '/chat';
   static const String debug = '/debug';
+  static const String tripDetail = '/trip-detail';
 }
 
 // Route names for easier navigation
@@ -19,10 +21,12 @@ class RouteNames {
 }
 
 // Navigation helpers
-class AppRouter {
-  static void goToHome(BuildContext context) => context.go(AppRoutes.home);
+abstract class AppRouter {
+  static void pushToHome(BuildContext context) => context.go(AppRoutes.home);
   static void pushToChat(BuildContext context) => context.push(AppRoutes.chat);
   static void pushToDebug(BuildContext context) => context.push(AppRoutes.debug);
+  static void pushToTripDetail(BuildContext context, String tripId) =>
+      context.push('${AppRoutes.tripDetail}/$tripId');
 }
 
 // Error page widget
@@ -98,6 +102,13 @@ final GoRouter appRouter = GoRouter(
       path: AppRoutes.debug,
       name: RouteNames.debug,
       builder: (context, state) => const DebugScreen(),
+    ),
+    GoRoute(
+      path: '/trip-detail/:tripId',
+      builder: (context, state) {
+        final tripId = state.pathParameters['tripId']!;
+        return TripDetailScreen(tripId: tripId);
+      },
     ),
   ],
   

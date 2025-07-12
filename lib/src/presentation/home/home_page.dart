@@ -65,6 +65,16 @@ class HomePage extends StatelessWidget {
                       foregroundColor: Colors.white,
                     ),
                   ),
+                  ElevatedButton.icon(
+                    onPressed: () => AppRouter.pushToTripDetail(
+                        context, 'trip_demo_user_1703123456789'),
+                    icon: const Icon(Icons.card_travel),
+                    label: const Text('Trip Detail'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue,
+                      foregroundColor: Colors.white,
+                    ),
+                  ),
                 ],
               ),
             ],

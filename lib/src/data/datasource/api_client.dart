@@ -5,6 +5,7 @@ import '../../common/constants.dart';
 import '../model/chat_history_response.dart';
 import '../model/send_message_request.dart';
 import '../model/send_message_response.dart';
+import '../model/trip_detail_response.dart';
 
 part 'api_client.g.dart';
 
@@ -17,4 +18,7 @@ abstract class ApiClient {
 
   @POST('/chat/send')
   Future<SendMessageResponse> sendMessage(@Body() SendMessageRequest request);
+
+  @GET('/trips/{tripId}')
+  Future<TripDetailResponse> getTripDetails(@Path('tripId') String tripId);
 } 

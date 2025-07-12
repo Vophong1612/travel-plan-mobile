@@ -5,13 +5,20 @@ import 'src/common/app_config.dart';
 import 'src/data/datasource/api_client.dart';
 import 'src/data/datasource/mock_api_client.dart';
 import 'src/data/repository/chat_repository_impl.dart';
+import 'src/data/repository/mappers/trip_detail_mapper.dart';
 import 'src/data/repository/mock_chat_repository_impl.dart';
+import 'src/data/repository/trip_repository_impl.dart';
 import 'src/domain/repository/chat_repository.dart';
+import 'src/domain/repository/trip_repository.dart';
 import 'src/presentation/chat/bloc/chat_bloc.dart';
+import 'src/presentation/trip/details/bloc/trip_detail_bloc.dart';
 
 final di = GetIt.instance;
 
 void configureDependencies() {
+  // Register TripDetailMapper (same for both real and mock)
+  di.registerLazySingleton<TripDetailMapper>(() => TripDetailMapper());
+
   // Register Dio (only needed for real API)
   if (!AppConfig.useMockApi) {
     di.registerLazySingleton<Dio>(() {
@@ -28,6 +35,11 @@ void configureDependencies() {
     di.registerLazySingleton<ChatRepository>(
       () => ChatRepositoryImpl(di<ApiClient>()),
     );
+
+    // Register real Trip repository
+    di.registerLazySingleton<TripRepository>(
+      () => TripRepositoryImpl(di<ApiClient>(), di<TripDetailMapper>()),
+    );
   } else {
     // Register mock ApiClient
     di.registerLazySingleton<MockApiClient>(() => MockApiClient());
@@ -36,10 +48,16 @@ void configureDependencies() {
     di.registerLazySingleton<ChatRepository>(
       () => MockChatRepositoryImpl(di<MockApiClient>()),
     );
+
+    // Register mock Trip repository
+    di.registerLazySingleton<TripRepository>(
+      () => TripRepositoryImpl(di<MockApiClient>(), di<TripDetailMapper>()),
+    );
   }
   
   // Register ChatBloc (same for both real and mock)
-  di.registerFactory<ChatBloc>(
-    () => ChatBloc(di<ChatRepository>()),
-  );
+  di.registerFactory<ChatBloc>(() => ChatBloc(di<ChatRepository>()));
+
+  // Register TripDetailBloc (same for both real and mock)
+  di.registerFactory<TripDetailBloc>(() => TripDetailBloc(di<TripRepository>()));
 } 
