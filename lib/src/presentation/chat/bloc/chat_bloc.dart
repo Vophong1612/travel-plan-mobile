@@ -9,6 +9,13 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   final ChatRepository _chatRepository;
   final InMemoryChatController _chatController = InMemoryChatController();
 
+  final _loadingMessage = TextMessage(
+    id: (DateTime.now().millisecondsSinceEpoch + 1).toString(),
+    authorId: 'bot',
+    createdAt: DateTime.now(),
+    text: 'Thinking...',
+  );
+
   ChatBloc(this._chatRepository) : super(ChatInitial()) {
     on<LoadChatHistory>(_onLoadChatHistory);
     on<SendMessage>(_onSendMessage);
@@ -45,17 +52,19 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         final updatedMessages = [...currentState.messages, userMessage];
         _updateChatController(updatedMessages);
         emit(ChatLoaded(messages: updatedMessages, chatController: _chatController, isLoading: true));
-
+        
+        _addLoadingMessage();
+        
         // Send message to server
         final botResponse = await _chatRepository.sendMessage(event.message);
-        
-        // Add bot response to chat
         final botMessage = types.TextMessage(
           author: const types.User(id: 'bot'),
           id: (DateTime.now().millisecondsSinceEpoch + 1).toString(),
           text: botResponse,
         );
-        
+
+        _removeLoadingMessage();
+
         final finalMessages = [...updatedMessages, botMessage];
         _updateChatController(finalMessages);
         emit(ChatLoaded(messages: finalMessages, chatController: _chatController, isLoading: false));
@@ -79,5 +88,15 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         );
       }
     }
+  }
+
+  void _addLoadingMessage() {
+    _chatController.insertMessage(
+      _loadingMessage,
+    );
+  }
+
+  void _removeLoadingMessage() {
+    _chatController.removeMessage(_loadingMessage);
   }
 }

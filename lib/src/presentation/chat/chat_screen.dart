@@ -6,6 +6,7 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:logger/logger.dart';
 import 'package:travel_plan_mobile/injection.dart';
 import 'package:travel_plan_mobile/src/common/colors.dart';
+import 'package:travel_plan_mobile/src/presentation/_common/widget/typing_indication.dart';
 import 'bloc/chat_bloc.dart';
 import 'bloc/chat_event.dart';
 import 'bloc/chat_state.dart' as chat_state;
@@ -75,6 +76,13 @@ class ChatView extends StatelessWidget {
                       child: Text(message.text, style: textTheme.bodyMedium?.copyWith(color: colorScheme.onPrimary, fontSize: 16)),
                     );
                   } else {
+                    if (state.isLoading && index == state.messages.length) { 
+                      return TypingIndicator(showIndicator: true,
+                      bubbleColor: colorScheme.primaryFixed,
+                      flashingCircleDarkColor: colorScheme.primary,
+                      flashingCircleBrightColor: colorScheme.onPrimary,
+                      );
+                    }
                     return Container(
                       constraints: BoxConstraints(
                         maxWidth: MediaQuery.of(context).size.width * 0.8,
