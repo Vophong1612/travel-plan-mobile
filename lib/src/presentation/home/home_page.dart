@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:travel_plan_mobile/src/common/app_config.dart';
 import 'package:travel_plan_mobile/src/common/colors.dart' show AppColors;
 import 'package:travel_plan_mobile/src/common/router.dart';
 
@@ -56,15 +57,13 @@ class HomePage extends StatelessWidget {
                     icon: const Icon(Icons.chat),
                     label: const Text('Chat'),
                   ),
-                  ElevatedButton.icon(
-                    onPressed: () => AppRouter.pushToDebug(context),
-                    icon: const Icon(Icons.bug_report),
-                    label: const Text('Debug'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.orange,
-                      foregroundColor: Colors.white,
+                  if (AppConfig.useMockApi)
+                    ElevatedButton.icon(
+                      onPressed: () => AppRouter.pushToDebug(context),
+                      icon: const Icon(Icons.bug_report),
+                      label: const Text('Debug'),
+                      style: ElevatedButton.styleFrom(backgroundColor: Colors.orange, foregroundColor: Colors.white),
                     ),
-                  ),
                   ElevatedButton.icon(
                     onPressed: () => AppRouter.pushToTripDetail(
                         context, 'trip_demo_user_1703123456789'),

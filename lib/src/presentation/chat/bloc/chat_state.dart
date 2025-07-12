@@ -31,6 +31,11 @@ class ChatLoaded extends ChatState {
   List<Object?> get props => [messages, isLoading, chatController];
 }
 
+class ChatWaitingForResponse extends ChatState {
+  @override
+  List<Object?> get props => [];
+}
+
 class ChatError extends ChatState {
   final String message;
 

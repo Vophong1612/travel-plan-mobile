@@ -4,9 +4,9 @@ part 'send_message_response.g.dart';
 
 @JsonSerializable()
 class SendMessageResponse {
-  final String response;
+  final String? message;
 
-  SendMessageResponse({required this.response});
+  SendMessageResponse({required this.message});
 
   factory SendMessageResponse.fromJson(Map<String, dynamic> json) =>
       _$SendMessageResponseFromJson(json);

@@ -75,7 +75,7 @@ class MockApiClient {
     );
     _mockChatHistory.add(botMessage);
     
-    return SendMessageResponse(response: botResponse);
+    return SendMessageResponse(message: botResponse);
   }
 
   Future<TripDetailResponse> getTripDetails(String tripId) async {

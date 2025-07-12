@@ -23,6 +23,7 @@ void configureDependencies() {
   if (!AppConfig.useMockApi) {
     di.registerLazySingleton<Dio>(() {
       final dio = Dio();
+      dio.options.baseUrl = AppConstants.baseUrl;
       dio.options.connectTimeout = Duration(milliseconds: AppConstants.connectionTimeout);
       dio.options.receiveTimeout = Duration(milliseconds: AppConstants.receiveTimeout);
       return dio;

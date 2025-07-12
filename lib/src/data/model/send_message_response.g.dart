@@ -7,8 +7,8 @@ part of 'send_message_response.dart';
 // **************************************************************************
 
 SendMessageResponse _$SendMessageResponseFromJson(Map<String, dynamic> json) =>
-    SendMessageResponse(response: json['response'] as String);
+    SendMessageResponse(message: json['message'] as String?);
 
 Map<String, dynamic> _$SendMessageResponseToJson(
   SendMessageResponse instance,
-) => <String, dynamic>{'response': instance.response};
+) => <String, dynamic>{'message': instance.message};

@@ -47,7 +47,9 @@ class TripDetailView extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _buildTripSummary(context, trip),
-                    const SizedBox(height: 36),
+                    const SizedBox(height:16),
+                    _buildCompanionsButton(context),
+                    const SizedBox(height: 16),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: Text('Daily Schedule', style: textTheme.titleLarge),
@@ -157,6 +159,41 @@ class TripDetailView extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(color: colorScheme.primary, borderRadius: BorderRadius.circular(16)),
       child: Text(day, style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: colorScheme.onPrimary)),
+    );
+  }
+
+  Widget _buildCompanionsButton(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Theme.of(context).colorScheme.primary,
+            Theme.of(context).colorScheme.secondary,
+            Theme.of(context).colorScheme.tertiary,
+            Theme.of(context).colorScheme.error,
+          ],
+        ),
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: TextButton(
+        onPressed: () {
+          // TODO: Implement similar plans search
+        },
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.search, color: Colors.white),
+            const SizedBox(width: 8),
+            Text(
+              'Wanna have companions ?',
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Colors.white),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

@@ -1,6 +1,7 @@
 // ignore_for_file: uri_has_not_been_generated, undefined_class
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
+import 'package:travel_plan_mobile/src/common/api_endpoints.dart';
 import '../../common/constants.dart';
 import '../model/chat_history_response.dart';
 import '../model/send_message_request.dart';
@@ -13,10 +14,10 @@ part 'api_client.g.dart';
 abstract class ApiClient {
   factory ApiClient(Dio dio, {String baseUrl}) = _ApiClient;
 
-  @GET('/chat/history')
+  @GET(ApiEndpoints.chatHistory)
   Future<ChatHistoryResponse> getChatHistory();
 
-  @POST('/chat/send')
+  @POST(ApiEndpoints.sendMessage)
   Future<SendMessageResponse> sendMessage(@Body() SendMessageRequest request);
 
   @GET('/trips/{tripId}')

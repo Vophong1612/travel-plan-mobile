@@ -1,8 +1,5 @@
 class AppConstants {
-  static const String baseUrl = 'https://api.example.com';
-  
-  // API Endpoints
-  static const String apiVersion = '/v1';
+  static const String baseUrl = 'http://localhost:8000';
   
   // Timeouts
   static const int connectionTimeout = 30000;

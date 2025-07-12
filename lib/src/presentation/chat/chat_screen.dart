@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_chat_core/flutter_chat_core.dart';
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:logger/logger.dart';
 import 'package:travel_plan_mobile/injection.dart';
 import 'package:travel_plan_mobile/src/common/colors.dart';
 import 'bloc/chat_bloc.dart';
@@ -34,17 +36,14 @@ class ChatView extends StatelessWidget {
       ),
       body: BlocBuilder<ChatBloc, chat_state.ChatState>(
         builder: (context, state) {
+          Logger().d(state);
           if (state is chat_state.ChatLoading) {
             return const Center(child: CircularProgressIndicator());
           } else if (state is chat_state.ChatLoaded) {
             return Chat(
               chatController: state.chatController,
               currentUserId: _user.id,
-              theme: ChatTheme.fromThemeData(themeData).copyWith(
-                typography: ChatTypography.standard().copyWith(
-                  bodyMedium: ChatTypography.standard().bodyMedium.copyWith(fontSize: 16),
-                ),
-              ),
+              theme: ChatTheme.fromThemeData(themeData),
               resolveUser: (_) async {
                 return _user;
               },
@@ -54,6 +53,50 @@ class ChatView extends StatelessWidget {
                 }
               },
               builders: Builders(
+                textMessageBuilder: (context, message, index, {required bool isSentByMe, MessageGroupStatus? groupStatus}) {
+                  final colorScheme = Theme.of(context).colorScheme;
+                  final textTheme = Theme.of(context).textTheme;
+                  if (isSentByMe) {
+                    return ConstrainedBox(
+                      constraints: BoxConstraints(
+                        maxWidth: MediaQuery.of(context).size.width * 0.8,
+                      ),
+                      child: Container(
+                        padding: const EdgeInsets.all(12),
+                        margin: const EdgeInsets.only(bottom: 16),
+                        decoration: BoxDecoration(
+                          color: colorScheme.primary,
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(16),
+                            topRight: Radius.circular(16),
+                            bottomLeft: Radius.circular(16),
+                            bottomRight: Radius.circular(0),
+                          ),
+                        ),
+                        child: Text(message.text, style: textTheme.bodyMedium?.copyWith(color: colorScheme.onPrimary, fontSize: 16)),
+                      ),
+                    );
+                  } else {
+                    return ConstrainedBox(
+                      constraints: BoxConstraints(
+                        maxWidth: MediaQuery.of(context).size.width * 0.8,
+                      ),
+                      child: Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: colorScheme.primaryFixed,
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(0),
+                            topRight: Radius.circular(16),
+                            bottomLeft: Radius.circular(16),
+                            bottomRight: Radius.circular(16),
+                          ),
+                        ),
+                        child: MarkdownBody(data: message.text),
+                      ),
+                    );
+                  }
+                },
                 chatAnimatedListBuilder: (context, itemBuilder) {
                   return ChatAnimatedList(itemBuilder: itemBuilder);
                 }

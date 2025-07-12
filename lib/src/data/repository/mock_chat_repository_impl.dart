@@ -24,7 +24,7 @@ class MockChatRepositoryImpl implements ChatRepository {
     try {
       final request = SendMessageRequest(message: message);
       final response = await _mockApiClient.sendMessage(request);
-      return response.response;
+      return response.message ?? '';
     } catch (e) {
       throw ChatException('Failed to send message: $e');
     }
