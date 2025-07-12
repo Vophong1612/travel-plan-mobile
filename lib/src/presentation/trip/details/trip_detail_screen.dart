@@ -248,7 +248,10 @@ class TripDetailView extends StatelessWidget {
       ),
       child: TextButton(
         onPressed: () {
-          // TODO: Implement similar plans search
+          showDialog(
+            context: context,
+            builder: (context) => const CompanionDialog(),
+          );
         },
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -261,6 +264,272 @@ class TripDetailView extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class CompanionDialog extends StatefulWidget {
+  const CompanionDialog({super.key});
+
+  @override
+  State<CompanionDialog> createState() => _CompanionDialogState();
+}
+
+class _CompanionDialogState extends State<CompanionDialog> {
+  bool _isAgreed = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+    
+    return Dialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      child: Container(
+        padding: const EdgeInsets.all(24),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Close Button
+              Align(
+                alignment: Alignment.topRight,
+                child: IconButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  icon: const Icon(Icons.close),
+                  style: IconButton.styleFrom(
+                    backgroundColor: colorScheme.surfaceVariant,
+                  ),
+                ),
+              ),
+              
+              // Title
+              Text(
+                'Find Your Perfect Travel Companions!',
+                style: textTheme.headlineSmall?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: colorScheme.onSurface,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 16),
+              
+              // Illustrative Icons
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.groups,
+                    size: 48,
+                    color: colorScheme.primary,
+                  ),
+                  const SizedBox(width: 8),
+                  Icon(
+                    Icons.travel_explore,
+                    size: 48,
+                    color: colorScheme.primary,
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              
+              // Introductory Text
+              Text(
+                'Looking to enhance your trip with some great company? We\'ll suggest potential companions based on your trip, and you can choose who to connect with!',
+                style: textTheme.bodyLarge?.copyWith(
+                  color: colorScheme.onSurface.withValues(alpha: 0.7),
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 24),
+              
+              // Matching Mechanism List
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Our smart matching system considers:',
+                      style: textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: colorScheme.onSurface,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    _buildMatchingItem(
+                      context,
+                      Icons.location_on,
+                      'Proximity',
+                      'Travelers visiting your destination or nearby cities (within 100km).',
+                    ),
+                    _buildMatchingItem(
+                      context,
+                      Icons.calendar_month,
+                      'Trip Overlap',
+                      'Users with trips coinciding with yours, or where one trip can be part of the other.',
+                    ),
+                    _buildMatchingItem(
+                      context,
+                      Icons.palette,
+                      'Shared Interests',
+                      'Matching over 60% of your planned activities to ensure great compatibility.',
+                    ),
+                    _buildMatchingItem(
+                      context,
+                      Icons.speed,
+                      'Similar Pace',
+                      'Identifying travelers who prefer a similar tempo of exploration.',
+                    ),
+                    _buildMatchingItem(
+                      context,
+                      Icons.flag,
+                      'Common Goals',
+                      'Looking for companions with similar travel motivations (e.g., cultural immersion, relaxation, adventure).',
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 24),
+              
+              // Privacy Consent
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: colorScheme.surfaceVariant,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  'By opting in, you agree to share your trip details (destination, dates, and activities) with other users who might be a good match. Your personal information will remain private.',
+                  style: textTheme.bodySmall?.copyWith(
+                    color: colorScheme.onSurfaceVariant.withValues(alpha: 0.8),
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              const SizedBox(height: 16),
+              
+              // Agreement Checkbox
+              Row(
+                children: [
+                  Checkbox(
+                    value: _isAgreed,
+                    onChanged: (value) {
+                      setState(() {
+                        _isAgreed = value ?? false;
+                      });
+                    },
+                  ),
+                  Expanded(
+                    child: Text(
+                      'I understand and agree to share my trip details.',
+                      style: textTheme.bodyMedium?.copyWith(
+                        color: colorScheme.onSurface,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 24),
+              
+              // Action Buttons
+              Column(
+                children: [
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: _isAgreed ? () {
+                        // TODO: Implement share trip functionality
+                        Navigator.of(context).pop();
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Trip shared! We\'ll notify you when we find potential companions.'),
+                          ),
+                        );
+                      } : null,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: colorScheme.primary,
+                        foregroundColor: colorScheme.onPrimary,
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: Text(
+                        'Share My Trip & Find Companions',
+                        style: textTheme.titleMedium?.copyWith(
+                          color: colorScheme.onPrimary,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  SizedBox(
+                    width: double.infinity,
+                    child: TextButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      style: TextButton.styleFrom(
+                        foregroundColor: colorScheme.primary,
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: Text(
+                        'No Thanks',
+                        style: textTheme.titleMedium?.copyWith(
+                          color: colorScheme.primary,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMatchingItem(BuildContext context, IconData icon, String title, String description) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+    
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(
+            icon,
+            color: colorScheme.primary,
+            size: 20,
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: textTheme.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: colorScheme.onSurface,
+                  ),
+                ),
+                Text(
+                  description,
+                  style: textTheme.bodySmall?.copyWith(
+                    color: colorScheme.onSurface.withValues(alpha: 0.7),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
