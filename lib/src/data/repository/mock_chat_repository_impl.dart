@@ -20,11 +20,11 @@ class MockChatRepositoryImpl implements ChatRepository {
   }
 
   @override
-  Future<String> sendMessage(String message) async {
+  Future<(String, bool)> sendMessage(String message) async {
     try {
       final request = SendMessageRequest(message: message);
       final response = await _mockApiClient.sendMessage(request);
-      return response.message ?? '';
+      return (response.message ?? '', false);
     } catch (e) {
       throw ChatException('Failed to send message: $e');
     }

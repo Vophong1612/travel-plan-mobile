@@ -336,7 +336,7 @@ class _CompanionDialogState extends State<CompanionDialog> {
               
               // Introductory Text
               Text(
-                'Looking to enhance your trip with some great company? We\'ll suggest potential companions based on your trip, and you can choose who to connect with!',
+                'Looking to enhance your trip with some great companions? We\'ll suggest potential companions based on your trip, and you can choose who to connect with!',
                 style: textTheme.bodyLarge?.copyWith(
                   color: colorScheme.onSurface.withValues(alpha: 0.7),
                 ),
@@ -361,32 +361,26 @@ class _CompanionDialogState extends State<CompanionDialog> {
                     _buildMatchingItem(
                       context,
                       Icons.location_on,
-                      'Proximity',
+                      'Destination',
                       'Travelers visiting your destination or nearby cities (within 100km).',
                     ),
                     _buildMatchingItem(
                       context,
                       Icons.calendar_month,
-                      'Trip Overlap',
+                      'Trip Schedule',
                       'Users with trips coinciding with yours, or where one trip can be part of the other.',
                     ),
                     _buildMatchingItem(
                       context,
                       Icons.palette,
-                      'Shared Interests',
+                      'Shared Activities',
                       'Matching over 60% of your planned activities to ensure great compatibility.',
                     ),
                     _buildMatchingItem(
                       context,
                       Icons.speed,
-                      'Similar Pace',
+                      'Trip Style',
                       'Identifying travelers who prefer a similar tempo of exploration.',
-                    ),
-                    _buildMatchingItem(
-                      context,
-                      Icons.flag,
-                      'Common Goals',
-                      'Looking for companions with similar travel motivations (e.g., cultural immersion, relaxation, adventure).',
                     ),
                   ],
                 ),

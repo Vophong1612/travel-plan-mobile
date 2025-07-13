@@ -6,6 +6,7 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:logger/logger.dart';
 import 'package:travel_plan_mobile/injection.dart';
 import 'package:travel_plan_mobile/src/common/colors.dart';
+import 'package:travel_plan_mobile/src/common/router.dart';
 import 'package:travel_plan_mobile/src/presentation/_common/widget/typing_indication.dart';
 import 'bloc/chat_bloc.dart';
 import 'bloc/chat_event.dart';
@@ -81,22 +82,36 @@ class ChatView extends StatelessWidget {
                             flashingCircleBrightColor: colorScheme.onPrimaryFixed,
                           );
                         }
-                        return Container(
-                          constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.9),
-                          padding: const EdgeInsets.all(12),
-                          decoration: BoxDecoration(
-                            color: colorScheme.primaryFixed,
-                            borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(0),
-                              topRight: Radius.circular(16),
-                              bottomLeft: Radius.circular(16),
-                              bottomRight: Radius.circular(16),
+                        return Column(
+                          children: [
+                            Container(
+                              constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.9),
+                              padding: const EdgeInsets.all(12),
+                              decoration: BoxDecoration(
+                                color: colorScheme.primaryFixed,
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(0),
+                                  topRight: Radius.circular(16),
+                                  bottomLeft: Radius.circular(16),
+                                  bottomRight: Radius.circular(16),
+                                ),
+                              ),
+                              child: MarkdownBody(
+                                data: message.text,
+                                styleSheet: MarkdownStyleSheet(tableColumnWidth: const FixedColumnWidth(150)),
+                              ),
                             ),
-                          ),
-                          child: MarkdownBody(
-                            data: message.text,
-                            styleSheet: MarkdownStyleSheet(tableColumnWidth: const FixedColumnWidth(150)),
-                          ),
+                            if (state.canNavigateToTripDetail) ...[
+                              const SizedBox(height: 8),
+                              ElevatedButton.icon(
+                                onPressed: () {
+                                  AppRouter.pushToTripDetail(context, 'trip_demo_user_1703123456789');
+                                },
+                                icon: const Icon(Icons.card_travel),
+                                label: const Text('See trip plan'),
+                              ),
+                            ],
+                          ],
                         );
                       }
                     },

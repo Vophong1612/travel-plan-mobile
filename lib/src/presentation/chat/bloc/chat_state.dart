@@ -19,16 +19,18 @@ class ChatLoading extends ChatState {
 class ChatLoaded extends ChatState {
   final List<types.Message> messages;
   final bool isLoading;
+  final bool canNavigateToTripDetail;
   final InMemoryChatController chatController;
 
   const ChatLoaded({
     required this.messages,
     required this.chatController,
+    this.canNavigateToTripDetail = false,
     this.isLoading = false,
   });
 
   @override
-  List<Object?> get props => [messages, isLoading, chatController];
+  List<Object?> get props => [messages, isLoading, canNavigateToTripDetail, chatController];
 }
 
 class ChatError extends ChatState {

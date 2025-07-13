@@ -56,7 +56,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         _addLoadingMessage();
         
         // Send message to server
-        final botResponse = await _chatRepository.sendMessage(event.message);
+        final (botResponse, canNavigateToTripDetail) = await _chatRepository.sendMessage(event.message);
         final botMessage = types.TextMessage(
           author: const types.User(id: 'bot'),
           id: (DateTime.now().millisecondsSinceEpoch + 1).toString(),
@@ -67,7 +67,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
         final finalMessages = [...updatedMessages, botMessage];
         _updateChatController(finalMessages);
-        emit(ChatLoaded(messages: finalMessages, chatController: _chatController, isLoading: false));
+        emit(ChatLoaded(messages: finalMessages, chatController: _chatController, isLoading: false, canNavigateToTripDetail: canNavigateToTripDetail));
       }
     } catch (e) {
       emit(ChatError('Failed to send message'));

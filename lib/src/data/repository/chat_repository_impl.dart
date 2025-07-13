@@ -41,7 +41,7 @@ class ChatRepositoryImpl implements ChatRepository {
   }
 
   @override
-  Future<String> sendMessage(String message) async {
+  Future<(String, bool)> sendMessage(String message) async {
     try {
       Logger().d('Sending message: $message');
       
@@ -60,7 +60,7 @@ class ChatRepositoryImpl implements ChatRepository {
       Logger().d('Response: ${response.toJson()}');
       
       // Try to parse and store trip detail if the response contains trip data
-      _tryParseAndStoreTripDetail(response);
+      final canNavigateToTripDetail = _tryParseAndStoreTripDetail(response);
       
       // Add bot response to local history
       final botMessage = types.TextMessage(
@@ -71,7 +71,7 @@ class ChatRepositoryImpl implements ChatRepository {
       );
       _chatHistory.add(botMessage);
       
-      return response.message ?? '';
+      return (response.message ?? '', canNavigateToTripDetail);
     } catch (e) {
       Logger().e('Failed to send message: $e');
       throw ChatException('Failed to send message: $e');
@@ -79,7 +79,7 @@ class ChatRepositoryImpl implements ChatRepository {
   }
 
   /// Try to parse the bot response as a SendMessageResponse and store trip detail
-  void _tryParseAndStoreTripDetail(SendMessageResponse sendMessageResponse) {
+  bool _tryParseAndStoreTripDetail(SendMessageResponse sendMessageResponse) {
     try {
       // Check if it's a successful response with trip details
       if (sendMessageResponse.success == true && sendMessageResponse.tripDetails != null) {
@@ -95,12 +95,15 @@ class ChatRepositoryImpl implements ChatRepository {
           // Store in the storage
           _tripDetailStorage.setTripDetail(tripDetailData);
           Logger().d('Trip detail stored successfully');
+          return true;
         }
       }
+      return false;
     } catch (e) {
       // If parsing fails, it's not a trip detail response, so we ignore it
       // This is expected for regular chat messages
       Logger().d('Response is not a trip detail response: $e');
+      return false;
     }
   }
 
