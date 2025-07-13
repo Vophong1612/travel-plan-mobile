@@ -16,10 +16,7 @@ class ChatScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => di<ChatBloc>()..add(LoadChatHistory()),
-      child: const ChatView(),
-    );
+    return BlocProvider(create: (context) => di<ChatBloc>()..add(LoadChatHistory()), child: const ChatView());
   }
 }
 
@@ -32,9 +29,7 @@ class ChatView extends StatelessWidget {
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Chat'),
-      ),
+      appBar: AppBar(title: const Text('Chat')),
       body: BlocBuilder<ChatBloc, chat_state.ChatState>(
         builder: (context, state) {
           Logger().d(state);
@@ -54,76 +49,65 @@ class ChatView extends StatelessWidget {
                 }
               },
               builders: Builders(
-                textMessageBuilder: (context, message, index, {required bool isSentByMe, MessageGroupStatus? groupStatus}) {
-                  final colorScheme = Theme.of(context).colorScheme;
-                  final textTheme = Theme.of(context).textTheme;
-                  if (isSentByMe) {
-                    return Container(
-                       constraints: BoxConstraints(
-                      maxWidth: MediaQuery.of(context).size.width * 0.8,
-                    ),
-                      padding: const EdgeInsets.all(12),
-                      margin: const EdgeInsets.only(bottom: 16),
-                      decoration: BoxDecoration(
-                        color: colorScheme.primary,
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(16),
-                          topRight: Radius.circular(16),
-                          bottomLeft: Radius.circular(16),
-                          bottomRight: Radius.circular(0),
-                        ),
-                      ),
-                      child: Text(message.text, style: textTheme.bodyMedium?.copyWith(color: colorScheme.onPrimary, fontSize: 16)),
-                    );
-                  } else {
-                    if (state.isLoading && index == state.messages.length) { 
-                      return TypingIndicator(showIndicator: true,
-                      bubbleColor: colorScheme.primaryFixed,
-                      flashingCircleDarkColor: colorScheme.primary,
-                      flashingCircleBrightColor: colorScheme.onPrimary,
-                      );
-                    }
-                    return Container(
-                      constraints: BoxConstraints(
-                        maxWidth: MediaQuery.of(context).size.width * 0.8,
-                      ),
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: colorScheme.primaryFixed,
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(0),
-                          topRight: Radius.circular(16),
-                          bottomLeft: Radius.circular(16),
-                          bottomRight: Radius.circular(16),
-                        ),
-                      ),
-                      child: SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: IntrinsicWidth(
+                textMessageBuilder:
+                    (context, message, index, {required bool isSentByMe, MessageGroupStatus? groupStatus}) {
+                      final colorScheme = Theme.of(context).colorScheme;
+                      final textTheme = Theme.of(context).textTheme;
+                      if (isSentByMe) {
+                        return Container(
+                          constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.9),
+                          padding: const EdgeInsets.all(12),
+                          margin: const EdgeInsets.only(bottom: 16),
+                          decoration: BoxDecoration(
+                            color: colorScheme.primary,
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(16),
+                              topRight: Radius.circular(16),
+                              bottomLeft: Radius.circular(16),
+                              bottomRight: Radius.circular(0),
+                            ),
+                          ),
+                          child: Text(
+                            message.text,
+                            style: textTheme.bodyMedium?.copyWith(color: colorScheme.onPrimary, fontSize: 16),
+                          ),
+                        );
+                      } else {
+                        if (state.isLoading && index == state.messages.length) {
+                          return TypingIndicator(
+                            showIndicator: true,
+                            bubbleColor: colorScheme.primaryFixed,
+                            flashingCircleDarkColor: colorScheme.primary,
+                            flashingCircleBrightColor: colorScheme.onPrimaryFixed,
+                          );
+                        }
+                        return Container(
+                          constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.9),
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: colorScheme.primaryFixed,
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(0),
+                              topRight: Radius.circular(16),
+                              bottomLeft: Radius.circular(16),
+                              bottomRight: Radius.circular(16),
+                            ),
+                          ),
                           child: MarkdownBody(
                             data: message.text,
-                            shrinkWrap: true,
-                            fitContent: true,
+                            styleSheet: MarkdownStyleSheet(tableColumnWidth: const FixedColumnWidth(150)),
                           ),
-                        ),
-                      ),
-                    );
-                  }
-                },
+                        );
+                      }
+                    },
                 chatAnimatedListBuilder: (context, itemBuilder) {
                   return ChatAnimatedList(itemBuilder: itemBuilder);
-                }
+                },
               ),
             );
           } else if (state is chat_state.ChatError) {
             return Center(
-              child: Text(
-                state.message,
-                style: TextStyle(
-                  color: AppColors.error,
-                  fontSize: 16,
-                ),
-              ),
+              child: Text(state.message, style: TextStyle(color: AppColors.error, fontSize: 16)),
             );
           }
           return const SizedBox.shrink();
